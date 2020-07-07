@@ -29,14 +29,16 @@ export class Renderer {
         const DOMURL = window.URL; // || window.webkitURL || window;
 
         const img = new Image(canvas.width, canvas.height);
-        img.setAttribute("crossOrigin", "anonymous");
+        img.crossOrigin = "anonymous";
+        //img.setAttribute("crossOrigin", "anonymous");
 
-        const blob = new Blob([data], { type: "image/svg+xml" });
+        const blob = new Blob([data], { type: "image/svg+xml"});
 
         const url = DOMURL.createObjectURL(blob);
 
         img.onload = () => {
             ctx.drawImage(img, 0, 0);
+
             DOMURL.revokeObjectURL(url);
 
             done(canvas.toDataURL(imageType !== undefined ? imageType : "image/png", imageQuality));

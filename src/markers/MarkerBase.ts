@@ -62,7 +62,7 @@ export class MarkerBase {
         }
     }
 
-    public endManipulation() {
+    public endManipulation(ev?: MouseEvent) {
         this.isDragging = false;
         this.isResizing = false;
     }

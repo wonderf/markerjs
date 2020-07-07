@@ -1,4 +1,3 @@
-import { Activator } from "./Activator";
 import { SvgHelper } from "./helpers/SvgHelper";
 import { Renderer } from "./Renderer";
 import { Toolbar } from "./toolbar/Toolbar";
@@ -6,30 +5,28 @@ import { ToolbarItem } from "./toolbar/ToolbarItem";
 
 import { MarkerBase } from "./markers/MarkerBase";
 
-import { ArrowMarkerToolbarItem } from "./markers/arrow/ArrowMarkerToolbarItem";
 import { CoverMarkerToolbarItem } from "./markers/cover/CoverMarkerToolbarItem";
 import { HighlightMarkerToolbarItem } from "./markers/highlight/HighlightMarkerToolbarItem";
 import { LineMarkerToolbarItem } from "./markers/line/LineMarkerToolbarItem";
 import { RectMarkerToolbarItem } from "./markers/rect/RectMarkerToolbarItem";
-import { TextMarkerToolbarItem } from "./markers/text/TextMarkerToolbarItem";
 
 import OkIcon from "./assets/core-toolbar-icons/check.svg";
 import DeleteIcon from "./assets/core-toolbar-icons/eraser.svg";
 import PointerIcon from "./assets/core-toolbar-icons/mouse-pointer.svg";
 import CloseIcon from "./assets/core-toolbar-icons/times.svg";
 
-import Logo from "./assets/markerjs-logo-m.svg";
-import Config, { MarkerColors } from './Config';
-import { EllipseMarkerToolbarItem } from './markers/ellipse/EllipseMarkerToolbarItem';
-import { MarkerAreaState } from './MarkerAreaState';
-import { MarkerBaseState } from './markers/MarkerBaseState';
-import { RectMarker } from './markers/rect/RectMarker';
-import { EllipseMarker } from './markers/ellipse/EllipseMarker';
-import { CoverMarker } from './markers/cover/CoverMarker';
-import { HighlightMarker } from './markers/highlight/HighlightMarker';
-import { TextMarker } from './markers/text/TextMarker';
-import { LineMarker } from './markers/line/LineMarker';
-import { ArrowMarker } from './markers/arrow/ArrowMarker';
+import Config, { MarkerColors } from "./Config";
+import { MarkerAreaState } from "./MarkerAreaState";
+import { ArrowMarker } from "./markers/arrow/ArrowMarker";
+import { CoverMarker } from "./markers/cover/CoverMarker";
+import { EllipseMarker } from "./markers/ellipse/EllipseMarker";
+import { HighlightMarker } from "./markers/highlight/HighlightMarker";
+import { LineMarker } from "./markers/line/LineMarker";
+import { MarkerBaseState } from "./markers/MarkerBaseState";
+import { RectMarker } from "./markers/rect/RectMarker";
+import { TextMarker } from "./markers/text/TextMarker";
+import { PolygonMarkerBase } from "./markers/PolygonMarkerBase"
+import { PolygonMarker } from "./markers/polygon/PolygonMarker";
 
 export class MarkerArea {
     private target: HTMLImageElement;
@@ -79,12 +76,7 @@ export class MarkerArea {
             tooltipText: "",
         },
         new RectMarkerToolbarItem(),
-        new EllipseMarkerToolbarItem(),
-        new CoverMarkerToolbarItem(),
-        new HighlightMarkerToolbarItem(),
         new LineMarkerToolbarItem(),
-        new ArrowMarkerToolbarItem(),
-        new TextMarkerToolbarItem(),
         {
             name: "separator",
             tooltipText: "",
@@ -108,9 +100,9 @@ export class MarkerArea {
         this.targetRoot = config && config.targetRoot ? config.targetRoot : document.body;
         this.renderAtNaturalSize = config && config.renderAtNaturalSize !== undefined ? config.renderAtNaturalSize : false;
         this.markerColors = {
-            mainColor: config && config.markerColors && config.markerColors.mainColor ? config.markerColors.mainColor : '#ff0000',
-            highlightColor: config && config.markerColors && config.markerColors.highlightColor ? config.markerColors.highlightColor : '#ffff00',
-            coverColor: config && config.markerColors && config.markerColors.coverColor ? config.markerColors.coverColor : '#000000'
+            mainColor: config && config.markerColors && config.markerColors.mainColor ? config.markerColors.mainColor : "#ff0000",
+            highlightColor: config && config.markerColors && config.markerColors.highlightColor ? config.markerColors.highlightColor : "#ffff00",
+            coverColor: config && config.markerColors && config.markerColors.coverColor ? config.markerColors.coverColor : "#000000",
         };
         this.strokeWidth = config && config.strokeWidth ? config.strokeWidth : 3;
         if (config && config.renderImageType) {
@@ -150,58 +142,10 @@ export class MarkerArea {
         if (this.previousState) {
             this.restoreState();
         }
-        if (!Activator.isLicensed) {
-            
-            // NOTE: 
-            // before removing this call please consider supporting marker.js
-            // by visiting https://markerjs.com/#price for details
-            // thank you!
-            this.addLogo();
-        }
-
         window.addEventListener("resize", this.adjustUI);
     }
 
-    private restoreState = () => {
-        if (this.previousState) {
-            this.previousState.markers.forEach(markerState => {
-                switch (markerState.markerType) {
-                    case 'RectMarker': {
-                        this.addMarker(RectMarker, markerState);
-                        break;
-                    }
-                    case 'EllipseMarker': {
-                        this.addMarker(EllipseMarker, markerState);
-                        break;
-                    }
-                    case 'CoverMarker': {
-                        this.addMarker(CoverMarker, markerState);
-                        break;
-                    }
-                    case 'HighlightMarker': {
-                        this.addMarker(HighlightMarker, markerState);
-                        break;
-                    }
-                    case 'TextMarker': {
-                        this.addMarker(TextMarker, markerState);
-                        break;
-                    }
-                    case 'LineMarker': {
-                        this.addMarker(LineMarker, markerState);
-                        break;
-                    }
-                    case 'ArrowMarker': {
-                        this.addMarker(ArrowMarker, markerState);
-                        break;
-                    }
-                    default: {
-                        console.log(`missing marker type state handler: ${markerState.markerType}`);
-                    }
-                }
-            })
-        }
-    }
-
+    // tslint:disable-next-line:max-line-length
     public render = (completeCallback: (dataUrl: string, state?: MarkerAreaState) => void, cancelCallback?: () => void) => {
         this.completeCallback = completeCallback;
         this.cancelCallback = cancelCallback;
@@ -223,8 +167,8 @@ export class MarkerArea {
     }
 
     public addMarker = (
-        markerType: typeof MarkerBase, 
-        previousState?: MarkerBaseState
+        markerType: typeof MarkerBase,
+        previousState?: MarkerBaseState,
     ) => {
         const marker = markerType.createMarker();
         marker.onSelected = this.selectMarker;
@@ -236,7 +180,7 @@ export class MarkerArea {
                 }
             }
         }
-        
+
         this.markers.push(marker);
         this.selectMarker(marker);
 
@@ -247,8 +191,10 @@ export class MarkerArea {
         const y = this.height / 2 / this.scale - bbox.height / 2;
 
         const translate = marker.visual.transform.baseVal.getItem(0);
-        translate.setMatrix(translate.matrix.translate(x, y));
-        marker.visual.transform.baseVal.replaceItem(translate, 0);
+        if (!(marker instanceof PolygonMarker)){
+            translate.setMatrix(translate.matrix.translate(x, y));
+            marker.visual.transform.baseVal.replaceItem(translate, 0);
+        }
 
         if (previousState) {
             marker.restoreState(previousState);
@@ -262,8 +208,53 @@ export class MarkerArea {
     }
 
     public getState = (): MarkerAreaState => {
-        let config = new MarkerAreaState(this.markers);
+        const config = new MarkerAreaState(this.markers);
         return config;
+    }
+
+    private restoreState = () => {
+        if (this.previousState) {
+            this.previousState.markers.forEach((markerState) => {
+                switch (markerState.markerType) {
+                    case "RectMarker": {
+                        this.addMarker(RectMarker, markerState);
+                        break;
+                    }
+                    case "EllipseMarker": {
+                        this.addMarker(EllipseMarker, markerState);
+                        break;
+                    }
+                    case "CoverMarker": {
+                        this.addMarker(CoverMarker, markerState);
+                        break;
+                    }
+                    case "HighlightMarker": {
+                        this.addMarker(HighlightMarker, markerState);
+                        break;
+                    }
+                    case "TextMarker": {
+                        this.addMarker(TextMarker, markerState);
+                        break;
+                    }
+                    case "LineMarker": {
+                        this.addMarker(LineMarker, markerState);
+                        break;
+                    }
+                    case "ArrowMarker": {
+                        this.addMarker(ArrowMarker, markerState);
+                        break;
+                    }
+                    case "PolygonMarker": {
+                        this.addMarker(PolygonMarker,markerState);
+                        break;
+                    }
+                    default: {
+                        // tslint:disable-next-line:no-console
+                        console.log(`missing marker type state handler: ${markerState.markerType}`);
+                    }
+                }
+            });
+        }
     }
 
     private setTargetRect = () => {
@@ -276,7 +267,7 @@ export class MarkerArea {
 
     private startRender = (done: (dataUrl: string) => void) => {
         const renderer = new Renderer();
-        renderer.rasterize(this.target, this.markerImage, done, 
+        renderer.rasterize(this.target, this.markerImage, done,
             this.renderAtNaturalSize, this.renderImageType, this.renderImageQuality, this.renderMarkersOnly);
     }
 
@@ -284,11 +275,12 @@ export class MarkerArea {
         this.markerImage.addEventListener("mousedown", this.mouseDown);
         this.markerImage.addEventListener("mousemove", this.mouseMove);
         this.markerImage.addEventListener("mouseup", this.mouseUp);
+        
     }
 
     private mouseDown = (ev: MouseEvent) => {
         /* tslint:disable:no-bitwise */
-        if (this.activeMarker && (ev.buttons & 1) > 0) {
+        if (this.activeMarker && (ev.buttons & 1) > 0 && !(this.activeMarker instanceof PolygonMarker)) {
             this.activeMarker.deselect();
             this.activeMarker = null;
         }
@@ -303,7 +295,7 @@ export class MarkerArea {
 
     private mouseUp = (ev: MouseEvent) => {
         if (this.activeMarker) {
-            this.activeMarker.endManipulation();
+            this.activeMarker.endManipulation(ev);
         }
     }
 
@@ -323,6 +315,7 @@ export class MarkerArea {
         this.markerImageHolder.style.width = `${this.width}px`;
         this.markerImageHolder.style.height = `${this.height}px`;
         this.markerImageHolder.style.transformOrigin = "top left";
+        this.markerImageHolder.style.zIndex = "202";
         this.positionMarkerImage();
 
         this.defs = SvgHelper.createDefs();
@@ -333,7 +326,7 @@ export class MarkerArea {
         this.targetRoot.appendChild(this.markerImageHolder);
     }
 
-    private adjustUI = (ev: UIEvent) => {
+    private adjustUI = () => {
         this.adjustSize();
         this.positionUI();
     }
@@ -357,9 +350,6 @@ export class MarkerArea {
         this.setTargetRect();
         this.positionMarkerImage();
         this.positionToolbar();
-        if (this.logoUI) {
-            this.positionLogo();
-        }
     }
 
     private positionMarkerImage = () => {
@@ -380,6 +370,7 @@ export class MarkerArea {
         this.toolbarUI = this.toolbar.getUI();
         this.targetRoot.appendChild(this.toolbarUI);
         this.toolbarUI.style.position = "absolute";
+        this.toolbarUI.style.zIndex = "202";
         this.positionToolbar();
     }
 
@@ -486,6 +477,19 @@ export class MarkerArea {
         this.markers.splice(this.markers.indexOf(marker), 1);
     }
 
+    public deleteTypeMarker = (typeMarker : String) => {
+        let toRemove : number[] = [];
+        for(let i=0;i<this.markers.length;i++){
+            if(this.markers[i].markerTypeName == typeMarker){
+                toRemove.push(i);
+            }
+        }
+        for (var i = toRemove.length - 1; i >= 0; i--){
+            this.markerImage.removeChild(this.markers[i].visual);
+            this.markers.splice(toRemove[i], 1);
+        }
+    }
+
     private complete = () => {
         this.selectMarker(null);
         this.startRender(this.renderFinishedClose);
@@ -513,32 +517,6 @@ export class MarkerArea {
             this.logoUI.style.top = `${this.targetRect.top + this.target.offsetHeight
                 - this.logoUI.clientHeight - 10}px`;
         }
-    }
-
-    /**
-     * NOTE: 
-     * 
-     * before removing or modifying this method please consider supporting marker.js
-     * by visiting https://markerjs.com/#price for details
-     * 
-     * thank you!
-     */
-    private addLogo = () => {
-        this.logoUI = document.createElement("div");
-        this.logoUI.className = "markerjs-logo";
-
-        const link = document.createElement("a");
-        link.href = "https://markerjs.com/";
-        link.target = "_blank";
-        link.innerHTML = Logo;
-        link.title = "Powered by marker.js";
-
-        this.logoUI.appendChild(link);
-
-        this.targetRoot.appendChild(this.logoUI);
-
-        this.logoUI.style.position = "absolute";
-        this.positionLogo();
     }
 
 }

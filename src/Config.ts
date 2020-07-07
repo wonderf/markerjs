@@ -1,4 +1,4 @@
-import { MarkerAreaState } from './MarkerAreaState';
+import { MarkerAreaState } from "./MarkerAreaState";
 
 export default interface Config {
   // root element of the target's DOM - document.body by default

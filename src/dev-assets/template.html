@@ -23,18 +23,19 @@
         let savedState;
 
         function showMarker(img) {
-            let x = new markerjs.MarkerArea(img, { 
-                renderAtNaturalSize: true, 
-            //    renderImageType: "image/jpeg", 
-            //    renderImageQuality: 0.1 
+            let x = new markerjs.MarkerArea(img, {
+                renderAtNaturalSize: true,
+                //    renderImageType: "image/jpeg", 
+                //    renderImageQuality: 0.1 
                 renderMarkersOnly: true,
                 previousState: savedState
             });
             // markerjs.Activator.key = "AB3-123C-T45";
             x.show((dataUrl, state) => {
-                const res = document.getElementById("resultImage");
+                // const res = document.getElementById("resultImage");
+                const res = img;
                 res.src = dataUrl;
-                res.style.display = "";
+                //res.style.display = "";
 
                 console.log(JSON.stringify(state));
                 savedState = state;
@@ -44,18 +45,29 @@
         let markerArea;
 
         function showApiMarker(img) {
-            markerArea = new markerjs.MarkerArea(img, { 
-                targetRoot: document.body, 
-                markerColors: { mainColor: '#00cc00' } 
+            markerArea = new markerjs.MarkerArea(img, {
+                targetRoot: document.body,
+                markerColors: { mainColor: '#00cc00' },
+                previousState: { markers: [{ "path": [[19, 42], [31, 213], [168, 203], [19, 44]], "markerType": "PolygonMarker" }]}
+                    
             });
             markerArea.open();
             document.getElementById('markerActivator').style.display = 'none';
             document.getElementById('markerControls').style.display = '';
         }
 
+        function addPolygon() {
+            if (markerArea)
+                markerArea.addMarker(markerjs.PolygonMarker);
+        }
         function addArrow() {
             if (markerArea) {
-                markerArea.addMarker(markerjs.ArrowMarker);
+                markerArea.addMarker(markerjs.RectMarker);
+            }
+        }
+        function addLine() {
+            if (markerArea) {
+                markerArea.addMarker(markerjs.LineMarker);
             }
         }
         function deleteMarker() {
@@ -92,21 +104,24 @@
         </div>
 
         <div id="markerControls" style="display: none;">
+            <button onclick="addPolygon();">add polygon</button>
             <button onclick="addArrow();">add arrow</button>
             <button onclick="deleteMarker();">delete marker</button>
             <button onclick="render();">render</button>
             <button onclick="closeMarkerArea();">close</button>
         </div>
 
-        <p><strong>Pellentesque habitant morbi tristique</strong> senectus et netus et malesuada fames ac turpis egestas.
+        <p><strong>Pellentesque habitant morbi tristique</strong> senectus et netus et malesuada fames ac turpis
+            egestas.
             Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam
-            egestas semper. <em>Aenean ultricies mi vitae est.</em> Mauris placerat eleifend leo. Quisque sit amet est et
+            egestas semper. <em>Aenean ultricies mi vitae est.</em> Mauris placerat eleifend leo. Quisque sit amet est
+            et
             sapien ullamcorper pharetra. Vestibulum erat wisi, condimentum sed, <code>commodo vitae</code>, ornare sit
             amet, wisi. Aenean fermentum, elit eget tincidunt condimentum, eros ipsum rutrum orci, sagittis tempus lacus
             enim ac dui. <a href="#">Donec non enim</a> in turpis pulvinar facilisis. Ut felis.</p>
 
-        <img id="bannerImage" crossorigin="anonymous" src="https://tinygoodies.com/ads/images/get-my-book-now-1200x900.jpg"
-            style="max-width: 600px;" alt="img" />
+        <img id="bannerImage" crossorigin="anonymous"
+            src="https://tinygoodies.com/ads/images/get-my-book-now-1200x900.jpg" style="max-width: 600px;" alt="img" />
     </div>
 
     <br /><br />
