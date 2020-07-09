@@ -21,6 +21,7 @@ export class PolygonMarkerBase extends MarkerBase {
     private controlBox: SVGGElement;
 
     private path: number[][] = [];
+    private rect: boolean = false;
 
     public endManipulation(ev?: MouseEvent) {
         super.endManipulation();
@@ -32,7 +33,8 @@ export class PolygonMarkerBase extends MarkerBase {
     public getState(): PolygonMarkerBaseState {
         const state: PolygonMarkerBaseState = Object.assign(
             {
-                path: this.path
+                path: this.path,
+                rect: this.rect,
             },
             super.getState(),
         );
@@ -41,10 +43,12 @@ export class PolygonMarkerBase extends MarkerBase {
 
     public completeRect() {
         this.drawTo(this.path[0][0],this.path[0][1]);
+        this.rect = true;
     }
 
     public restoreState(state: PolygonMarkerBaseState) {
         this.path=state.path;
+        this.rect = state.rect;
         this.adjustPath();
     }
 

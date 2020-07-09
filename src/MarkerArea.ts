@@ -493,10 +493,19 @@ export class MarkerArea {
             }
         }
         for (var i = toRemove.length - 1; i >= 0; i--){
-            this.markerImage.removeChild(this.markers[i].visual);
+            this.markerImage.removeChild(this.markers[toRemove[i]].visual);
             this.markers.splice(toRemove[i], 1);
         }
     }
+
+    public deleteAll = () => {
+        for (var i = 0; i < this.markers.length; i++){
+            this.markerImage.removeChild(this.markers[i].visual);
+        }
+        this.markers.splice(0, this.markers.length);
+    }
+
+
 
     private complete = () => {
         this.selectMarker(null);
