@@ -39,6 +39,10 @@ export class PolygonMarkerBase extends MarkerBase {
         return state;
     }
 
+    public completeRect() {
+        this.drawTo(this.path[0][0],this.path[0][1]);
+    }
+
     public restoreState(state: PolygonMarkerBaseState) {
         this.path=state.path;
         this.adjustPath();

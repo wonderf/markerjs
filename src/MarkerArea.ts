@@ -201,6 +201,15 @@ export class MarkerArea {
         }
     }
 
+    public completeRectPolygon = () => {
+        if (this.activeMarker && this.activeMarker.markerTypeName === "PolygonMarker") {
+            const polygon = this.activeMarker as PolygonMarkerBase;
+            polygon.completeRect();
+            this.activeMarker.deselect();
+            this.activeMarker = null;
+        }
+    }
+
     public deleteActiveMarker = () => {
         if (this.activeMarker) {
             this.deleteMarker(this.activeMarker);
@@ -275,7 +284,6 @@ export class MarkerArea {
         this.markerImage.addEventListener("mousedown", this.mouseDown);
         this.markerImage.addEventListener("mousemove", this.mouseMove);
         this.markerImage.addEventListener("mouseup", this.mouseUp);
-        
     }
 
     private mouseDown = (ev: MouseEvent) => {
