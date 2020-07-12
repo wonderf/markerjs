@@ -1,6 +1,6 @@
 {
-  "name": "markerjs",
-  "version": "1.8.1",
+  "name": "polygon-annotation-js",
+  "version": "1.0.0",
   "description": "Annotate and mark images",
   "main": "markerjs.umd.js",
   "module": "markerjs.esm.js",
@@ -14,7 +14,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/ailon/markerjs"
+    "url": "https://github.com/wonderf/markerjs"
   },
   "keywords": [
     "annotate",
