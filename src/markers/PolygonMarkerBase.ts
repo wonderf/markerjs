@@ -47,8 +47,11 @@ export class PolygonMarkerBase extends MarkerBase {
     }
 
     public restoreState(state: PolygonMarkerBaseState) {
-        this.path=state.path;
+        this.path = state.path;
         this.rect = state.rect;
+        if(this.rect){
+            this.path.push(this.path[0]);
+        }
         this.adjustPath();
     }
 

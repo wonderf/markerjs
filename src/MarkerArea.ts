@@ -210,6 +210,14 @@ export class MarkerArea {
         }
     }
 
+    public completeLinePolygon = () => {
+        if (this.activeMarker && this.activeMarker.markerTypeName === "PolygonMarker") {
+            const polygon = this.activeMarker as PolygonMarkerBase;
+            this.activeMarker.deselect();
+            this.activeMarker = null;
+        }
+    }
+
     public deleteActiveMarker = () => {
         if (this.activeMarker) {
             this.deleteMarker(this.activeMarker);
@@ -254,7 +262,7 @@ export class MarkerArea {
                         break;
                     }
                     case "PolygonMarker": {
-                        this.addMarker(PolygonMarker,markerState);
+                        this.addMarker(PolygonMarker, markerState);
                         break;
                     }
                     default: {

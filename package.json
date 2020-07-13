@@ -1,6 +1,6 @@
 {
   "name": "polygon-annotation-js",
-  "version": "1.0.0",
+  "version": "3.0.0",
   "description": "Annotate and mark images",
   "main": "markerjs.umd.js",
   "module": "markerjs.esm.js",
