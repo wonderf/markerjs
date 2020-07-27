@@ -369,8 +369,8 @@ export class MarkerArea {
     }
 
     private positionMarkerImage = () => {
-        this.markerImageHolder.style.top = this.targetRect.top + "px";
-        this.markerImageHolder.style.left = this.targetRect.left + "px";
+        this.markerImageHolder.style.top =  "70px";
+        this.markerImageHolder.style.left = "189px";
     }
 
     private positionToolbar = () => {
